@@ -1,8 +1,8 @@
 {
   "name": "web-events-server",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Event-oriented interface for client and server communication based on WebSocket protocol. It's a server part of this interface.",
-  "main": "index.js",
+  "main": "dist/web-events-server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,9 +17,20 @@
     "event-oriented",
     "websocket"
   ],
-  "author": "Lozhkin Dmitry",
-  "license": "ISC",
+  "author": {
+    "name": "Lozhkin Dmitry",
+    "email": "qqcoder911th@gmail.com"
+  },
+  "license": "MIT",
   "dependencies": {
     "ws": "4.0.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Coder911th/web-events-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Coder911th/web-events-server/issues"
+  },
+  "homepage": "https://github.com/Coder911th/web-events-server#readme"
 }
