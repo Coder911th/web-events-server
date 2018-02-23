@@ -81,7 +81,6 @@ function events(server, evs) {
             return; // Если возвращен примитив, игнорируем
 
         let eventName; // Имя вызываемого на другой стороне события
-            //args;      // Аргументы вызова
 
         if (returnValue instanceof Array) {
             /*
@@ -90,6 +89,13 @@ function events(server, evs) {
             */
             eventName = returnValue[0];
             args = returnValue.slice(1);
+            /*
+                Вызываем событие на другой стороне соединения
+                При получении аргументов функция emit оборачивает их в массив.
+                Сейчас в args данные уже находятся в виде массива и нужно
+                передать их по одному, поэтому вызываем emit через apply.
+            */
+            emit.apply(client, [eventName].concat(args));
         } else {
             /*
                 Из обработчика бы возвращен объект
@@ -97,11 +103,12 @@ function events(server, evs) {
                 а остальные свойства будут именованными аргументами
             */
             eventName = returnValue.type;
+            args = returnValue;
             delete args.type; // Убираем свойство type из аргументов
+            
+            // Вызываем событие на другой стороне соединения
+            client.emit(eventName, args);
         }
-
-        // Вызываем событие на другой стороне соединения
-        client.emit(eventName, args);
     }
 
     /*
@@ -121,9 +128,8 @@ function events(server, evs) {
         случае клиент получит один объект целиком
     */
     function emit(eventName, ...args) {
-
-        if (args.length == 1 && typeof args[0] == 'object')
-            args = args[0]; // Если аргументы были переданы через объект (массив)
+        if (!connections[this.uid])
+            throw new Error('You cannot call "emit" after closing connection.');
 
         connections[this.uid].socket.send(JSON.stringify({
             type: eventName,
@@ -144,10 +150,10 @@ function events(server, evs) {
         об установке WebSocket соединения
     */
     wss.on('headers', (headers, req) => {
-        /**** Тут рабатывает событие 'headers' ****/
+        /**** Тут рабатывает событие 'checkHeaders' ****/
 
-        if (evs.headers) // Доступны только headers и req
-            returnEmit(evs.headers, headers, req);
+        if (evs.checkHeaders) // Доступны только headers и req
+            returnEmit(evs.checkHeaders, null, [headers, req]);
     });
 
     /**** Ожидаем подключения ****/
@@ -175,7 +181,7 @@ function events(server, evs) {
             если таковой был определён
         */
         if (evs.connection)
-            returnEmit(evs.connection, client, ws, req);
+            returnEmit(evs.connection, client, [ws, req]);
 
         // Больше клиента не игнорируем в методах перебора
         client.irnore = false;
