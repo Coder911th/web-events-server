@@ -23,7 +23,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "ws": "4.0.0"
+    "ws": "^4.0.0"
   },
   "repository": {
     "type": "git",
