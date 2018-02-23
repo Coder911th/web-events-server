@@ -1,6 +1,6 @@
 {
   "name": "web-events-server",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Event-oriented interface for client and server communication based on WebSocket protocol. It's a server part of this interface.",
   "main": "dist/web-events-server.js",
   "scripts": {
