@@ -74,11 +74,15 @@ function events(server, evs) {
 
         Ответ будет доставлен инициатору события - client
     */
-    function returnEmit(func, client, args) {
+    async function returnEmit(func, client, args) {
         let returnValue = func.apply(client, args);
 
         if (typeof returnValue != "object")
             return; // Если возвращен примитив, игнорируем
+
+        // Обработчик оказался ассинхронной функцией
+        if (returnValue instanceof Promise)
+            returnValue = await returnValue;
 
         let eventName; // Имя вызываемого на другой стороне события
 
